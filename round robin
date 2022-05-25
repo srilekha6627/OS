@@ -1,0 +1,71 @@
+#include<stdio.h>
+
+int main(){
+    int n, count, i, j, k, sum_bt=0, qt, temp;
+    int sum_wt=0, sum_tat=0;
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    int bt[n], wt[n], dup_bt[n];
+
+    printf("Enter brust times of n processes: \n");
+    for(i = 0; i<n; i++){
+        scanf("%d", &bt[i]);
+        dup_bt[i]= bt[i];
+        sum_bt += bt[i];
+    }
+
+    printf("Enter quantum time: ");
+    scanf("%d", &qt);
+
+    int p[sum_bt], d[sum_bt];
+
+    for(k = 0; k<n; k++){
+        p[k]= k+1;
+    }
+
+
+    temp= sum_bt;
+    for(j=0; j<sum_bt && temp>0; j++){
+        if(bt[p[j]-1]>qt){
+            d[j]= qt;
+            p[k++]= p[j];
+            bt[p[j]-1] -= qt;
+            temp -= qt;
+        }
+        else if(bt[p[j]-1]==qt){
+            temp -= qt;
+            d[j]= qt;
+            //bt[p[j]-1] = 0;
+        }
+        else if(bt[p[j]-1]<qt){
+            temp -= bt[p[j]-1];
+            d[j]= bt[p[j]-1];
+            //bt[p[j]-1] = 0;
+
+        }
+
+    }
+
+    printf("Processes   Brust_time  Waiting_time    Turn_around_time\n");
+    for(i=0; i<n; i++){
+        count=0;
+        for(j=k-1; j>=0;j--){
+            if(p[j]== i+1){
+                while(j>=0){
+                    count+= d[j];
+                    j--;
+                }
+                wt[i]= count- dup_bt[i];
+                sum_wt+= wt[i];
+                sum_tat += count;
+                printf("%d\t\t%d\t\t%d\t\t%d\n", i+1, dup_bt[i], wt[i], count);
+                break;
+            }
+        }
+    }
+
+    printf("Average Waiting time= %f\n", (float)sum_wt/n);
+    printf("Average Turn around time= %f", (float)sum_tat/n);
+}
