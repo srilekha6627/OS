@@ -1,0 +1,54 @@
+#include<stdio.h>
+
+int main(){
+    int n, count, i, j, k, pos, temp;
+    float avg_wt=0, avg_tat=0;
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    int bt[n], wt[n], tat[n], pr[n], t[n], or[n];
+
+    printf("Enter Priorities and burst time of all processes: \n");
+    for(i = 0; i<n; i++){
+        or[i]= i+1;
+        scanf("%d %d", &pr[i], &bt[i]);
+    }
+
+    void swap(int *x,int *y){
+        int z= *x;
+        *x=*y;
+        *y= z;
+    }
+
+    for(i=0;i<n;i++){
+        pos=i;
+        for(j=i+1;j<n;j++){
+            if(pr[j]<pr[pos]){
+                pos=j;
+            }
+        }
+        swap(&or[i], &or[pos]);
+        swap(&bt[i], &bt[pos]);
+        swap(&pr[i], &pr[pos]);
+    }
+
+    for(i=0; i<n; i++){
+        if(pr[i]== pr[i+1] && or[i] > or[i+1]){
+            swap(&or[i], &or[i+1]);
+            swap(&bt[i], &bt[i+1]);
+        }
+    }
+
+    wt[0]= 0;
+    for(j=0; j<n-1; j++){
+        wt[j+1]= wt[j]+ bt[j];
+        avg_wt += wt[j+1];
+    }
+    printf("Processes   Brust_time  Waiting_time    Turn_around_time\n");
+    for(k= 0; k<n; k++){
+        tat[k]= wt[k]+bt[k];
+        avg_tat += tat[k];
+        printf("p%d\t\t%d\t\t%d\t\t%d\n", or[k], bt[k], wt[k], tat[k]);
+    }
+}
