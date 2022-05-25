@@ -1,0 +1,62 @@
+#include<stdio.h>
+
+int main(){
+    int n, count, i, j, k, pos, temp;
+    float sum_wt=0, sum_tat=0;
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    int bt[n], wt[n], tat[n], at[n], p[n];
+
+    printf("Enter Arrival time and brust time of all processes: \n");
+    for(i = 0; i<n; i++){
+        p[i]= i+1;
+        scanf("%d %d", &at[i], &bt[i]);
+    }
+
+    void swap(int *x,int *y){
+        int z= *x;
+        *x=*y;
+        *y= z;
+    }
+
+    for(i=0;i<n;i++){
+        pos=i;
+        for(j=i+1;j<n;j++){
+            if(at[j]<at[pos]){
+                pos=j;
+            }
+            else if((at[j]== at[pos]) && (bt[j] < bt[pos])){
+                pos=j;
+            }
+        }
+
+        swap(&p[i], &p[pos]);
+        swap(&bt[i], &bt[pos]);
+        swap(&at[i], &at[pos]);
+    }
+
+    wt[0]= 0;
+    for(j=1; j<n; j++){
+        count= 0;
+        for(k= 0; k<j; k++){
+            count+= bt[k];
+        }
+        wt[j]= count- at[j]+at[0];
+        sum_wt += wt[j];
+    }
+
+    for(k= 0; k<n; k++){
+        tat[k]= wt[k]+ bt[k];
+        sum_tat += tat[k];
+    }
+
+    printf("Processes   Waiting_time    Turn_around_time\n");
+    for(i= 0; i<n; i++){
+        printf("p%d\t\t%d\t\t%d\n", p[i], wt[i], tat[i]);
+    }
+
+    printf("Average Waiting Time= %f\n",sum_wt/n);
+    printf("Average Turnaround Time= %f",sum_tat/n);
+}
